@@ -439,7 +439,18 @@ myheatmap %>%
 
 
 >-  Chen, H, et al., _PLOS Computational Biology_ 2016
+>-  Integrated pipeline for analysing cytometry data in
+
+![](https://journals.plos.org/ploscompbiol/article/figure/image?size=large&id=10.1371/journal.pcbi.1005112.g001){ width=75% }
+
 </div>
 <div style="float: right; width: 50%;">
-![](https://journals.plos.org/ploscompbiol/article/figure/image?size=large&id=10.1371/journal.pcbi.1005112.g001){ width=75% }
+
+[CytoRSuite](https://dillonhammill.github.io/CytoRSuite/) 
+
+>-  Set of interactive tools that integrate with flowWorkspace 
+>-  *Interactive gating*, compensations, panels, etc...
+
+![](https://dillonhammill.github.io/CytoRSuite/reference/figures/README-gate_draw.gif)
+
 </div>
