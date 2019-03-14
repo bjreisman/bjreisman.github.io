@@ -48,6 +48,10 @@ In R, things that look hard are easy, but things that look easy are (a little) h
 _Example: The iris dataset: measurements of 50 flowers of 3 species of iris_ 
 ```{r introduce iris}
 head(iris)
+
+library(ggplot2)
+ggplot(iris, aes(x= Petal.Length, y = Petal.Width, col = Species)) + 
+  geom_point()
 ```
 
 
@@ -64,8 +68,8 @@ str(iris)
 iris_matrix <- as.matrix(iris)
 head(iris_matrix)
 str(iris_matrix)
-#that doesn't look right...
 ```
+that doesn't look right...
 
 ## Representing Data in R: Matricies (2)
 - Matrix: An $n*m$ array of items, all of the single class
@@ -80,9 +84,9 @@ str(iris_matrix)
 
 To work with data in R, it's best to have 'tidy data,' which meets the following criteria:
 
->1. Each variable must have its own column.
->2. Each observation must have its own row. 
->3. Each value must have its own cell.
+>1. Each variable ['feature'] must have its own column.
+>2. Each observation ['cell'] must have its own row. 
+>3. Each value must have its own cell ['entry'].
 
 ![](https://d33wubrfki0l68.cloudfront.net/6f1ddb544fc5c69a2478e444ab8112fb0eea23f8/91adc/images/tidy-1.png){ width=50% }
 
@@ -147,7 +151,7 @@ fcs_paths <- list.files(pattern = ".fcs", recursive = T)
 print(fcs_paths)
 ```
 
-## Connecting to Cytobank
+## Cytotidyr and CytobankAPI can be used to work between Cytobank and R
 
 Using `CytobankAPI` and `Cytotidyr` we'll read in our experiment information from cytobank.
 This includes:
@@ -178,7 +182,7 @@ Then we'll convert it to a gatingSet
 mygatingset <- flowWorkspace::GatingSet(myflowset)
 ```
 
-## Applying Transformations, Gates, Panels:
+## Cytometry Preprocessing (Transformations, Gates, Panels) can be done in R
 
 Next we'll:
 
@@ -193,7 +197,7 @@ CytoML::gating(exp_info$gates, mygatingset)
 myflowset_preprocessed <- flowWorkspace::getData(mygatingset)
 ```
 
-## Converting the flowset to a tidy 
+## Cytotidyr allows us to convert the flowset to a tidy data.frame
 
 In order to work with our data using R, we'll need to convert it to a data frame, using the `as.data.frame` function from cytotidyr
 ```{r}
