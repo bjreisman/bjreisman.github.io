@@ -31,6 +31,8 @@ Compared to Commercial Flow Cytometry Software, R has the following advantages:
 - Free!
 </div>
 <div style="float: right; width: 50%;">
+![](https://raw.githubusercontent.com/bjreisman/bjreisman.github.io/master/London2019/movie.gif)
+</div>
 
 ## Goals of this talk:
 In R, things that look hard are easy, but things that look easy are (a little) hard.
