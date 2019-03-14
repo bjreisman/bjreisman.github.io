@@ -22,28 +22,30 @@ options(tinytex.verbose = TRUE)
 _"R is a free software environment for statistical computing and graphics"_
 
 Compared to Commercial Flow Cytometry Software, R has the following advantages:
-
->- Reproducible (Data + Code = Figures)
->- Flexible (This presentation was created in R!)
->- Nice Graphics (ggplot2)
->- Great for analysis pipelines and frequently used workflows
->- Newest analysis techniques
->- Free!
+<div style="float: left; width: 50%;">
+- Reproducible (Data + Code = Figures)
+- Flexible (This presentation was created in R!)
+- Nice Graphics (ggplot2)
+- Great for analysis pipelines and frequently used workflows
+- Newest analysis techniques
+- Free!
+</div>
+<div style="float: right; width: 50%;">
 
 ## Goals of this talk:
 In R, things that look hard are easy, but things that look easy are (a little) hard.
 
->- Demonstrate why you might want to work in R
->- Overcoming the biggest obstacles to working in R
->    - Getting data into R
->    - Tidying data into the right format for analysis
->- Introduce some advanced analysis techniques
->- Provide examples and links to resources for learning more. 
+- Demonstrate why you might want to work in R
+- Overcoming the biggest obstacles to working in R
+    - Getting data into R
+    - Tidying data into the right format for analysis
+- Introduce some advanced analysis techniques
+- Provide examples and links to resources for learning more. 
 
 ## Representing Data in R
 
->- Matrix: An $n*m$ array of items, all of the single class
->- Data Frame: An $n*m$ array of items, but each column can be a different class
+- Matrix: An $n*m$ array of items, all of the single class
+- Data Frame: An $n*m$ array of items, but each column can be a different class
 
 _Example: The iris dataset: measurements of 50 flowers of 3 species of iris_ 
 ```{r introduce iris}
@@ -84,9 +86,9 @@ str(iris_matrix)
 
 To work with data in R, it's best to have 'tidy data,' which meets the following criteria:
 
->1. Each variable ['feature'] must have its own column.
->2. Each observation ['cell'] must have its own row. 
->3. Each value must have its own cell ['entry'].
+1. Each variable ['feature'] must have its own column.
+2. Each observation ['cell'] must have its own row. 
+3. Each value must have its own cell ['entry'].
 
 ![](https://d33wubrfki0l68.cloudfront.net/6f1ddb544fc5c69a2478e444ab8112fb0eea23f8/91adc/images/tidy-1.png){ width=50% }
 
@@ -98,13 +100,13 @@ _For more information, see_: Wickham, Hadley. "Tidy data." _Journal of Statistic
 
 A number of specialized classes have been developed to represent high dimensional bioinformatics data: 
 
->- Biocondutor:
->    - `SummarizedExperiment` - created to represent genetic data (RNAseq, microarray, etc...)
->- `flowcore` (RGlab)
->    - `FlowFrame` - Representation of an FCS file in R
->    - `FlowSet` - Container for multiple FlowFrames + Metadata 
->- `flowWorkspace` (RGlab)
->    - `GatingSet`- A FlowSet + associated gating hierarchy
+- Biocondutor:
+    - `SummarizedExperiment` - created to represent genetic data (RNAseq, microarray, etc...)
+- `flowcore` (RGlab)
+    - `FlowFrame` - Representation of an FCS file in R
+    - `FlowSet` - Container for multiple FlowFrames + Metadata 
+- `flowWorkspace` (RGlab)
+    - `GatingSet`- A FlowSet + associated gating hierarchy
 
 ## Representing Flow Cytometry Data in R
 <div style="float: left; width: 50%;">
@@ -236,13 +238,13 @@ ggplot(mydataframe, aes(x = tSNE1, y = tSNE2)) +
 
 We may also want to plot multiple channels in the same plot with faceting:
 
->- Two differences between this plot compared and the last plot:
->    - Marker intensity is mapped to color
->    - Markers are facetted across mutliple subplots
+- Two differences between this plot compared and the last plot:
+    - Marker intensity is mapped to color
+    - Markers are facetted across mutliple subplots
 
->- In our current [wide] data.frame, intensity is spread across multiple columns
->- The plot we want to make requires a [long] data.frame with a single column for intensity + a new column for markers 
->- We'll need to 'tidy' the data to the right format for our plot.
+- In our current [wide] data.frame, intensity is spread across multiple columns
+- The plot we want to make requires a [long] data.frame with a single column for intensity + a new column for markers 
+- We'll need to 'tidy' the data to the right format for our plot.
 
 ```{r cache = T}
 dim((mydataframe))
@@ -277,14 +279,14 @@ mydataframe.long %>%
 
 One of the advantages of R is that we're not limited to the dimensionality reduction techniques that are included in commercial packages. 
 
->- Ex: Uniform Manifold Approximation and Projection (UMAP)
->    - McInnes L. et al. arXiv, 2018
+- Ex: Uniform Manifold Approximation and Projection (UMAP)
+    - McInnes L. et al. arXiv, 2018
     
->- Advantages of UMAP vs. tSNE
->   - Faster (minutes vs. hours)
->   - Scalable ($f(n)$ vs. $f(n*log(n))$)
->   - Preserves local+global structure
->   - Other nice features (embedding new points, supervised learning, etc...)
+- Advantages of UMAP vs. tSNE
+   - Faster (minutes vs. hours)
+   - Scalable ($f(n)$ vs. $f(n*log(n))$)
+   - Preserves local+global structure
+   - Other nice features (embedding new points, supervised learning, etc...)
 
 
 ## Applying alternative dimensionality reduction techniques (2)
@@ -369,10 +371,10 @@ mydataframe %>%
 
 We can also apply a clustering algorithm to our dimensionality reduced data. 
 
->- Density-based spatial clustering of applications with noise (DBSCAN)
->     - No need to specify number of clusters
->     - Few parameters to tune (eps and minPts) 
->     - Fast + scalable
+- Density-based spatial clustering of applications with noise (DBSCAN)
+     - No need to specify number of clusters
+     - Few parameters to tune (eps and minPts) 
+     - Fast + scalable
 
 ```{r}
 #install.packages("dbscan")
@@ -442,8 +444,8 @@ myheatmap %>%
 [CyTOFkit](https://github.com/JinmiaoChenLab/cytofkit)
 
 
->-  Chen, H, et al., _PLOS Computational Biology_ 2016
->-  Integrated pipeline for analysing cytometry data in R
+-  Chen, H, et al., _PLOS Computational Biology_ 2016
+-  Integrated pipeline for analysing cytometry data in R
 
 ![](https://journals.plos.org/ploscompbiol/article/figure/image?size=large&id=10.1371/journal.pcbi.1005112.g001){ width=75% }
 
@@ -452,8 +454,8 @@ myheatmap %>%
 
 [CytoRSuite](https://dillonhammill.github.io/CytoRSuite/) 
 
->-  Set of interactive tools that integrate with flowWorkspace 
->-  *Interactive gating*, compensations, panels, etc...
+-  Set of interactive tools that integrate with flowWorkspace 
+-  *Interactive gating*, compensations, panels, etc...
 
 ![](https://dillonhammill.github.io/CytoRSuite/reference/figures/README-gate_draw.gif)
 
@@ -461,6 +463,6 @@ myheatmap %>%
 
 ## Resources for Learning More
 
->- [Datacamp](https://www.datacamp.com/)
->- [R for Data Science - Hadley Wickham](https://r4ds.had.co.nz/)
->- Github [(London 2019)](https://github.com/bjreisman/bjreisman.github.io/tree/master/London2019)
+- [Datacamp](https://www.datacamp.com/)
+- [R for Data Science - Hadley Wickham](https://r4ds.had.co.nz/)
+- Github [(London 2019)](https://github.com/bjreisman/bjreisman.github.io/tree/master/London2019)
