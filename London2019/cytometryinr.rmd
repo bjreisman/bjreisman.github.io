@@ -439,7 +439,7 @@ myheatmap %>%
 
 
 >-  Chen, H, et al., _PLOS Computational Biology_ 2016
->-  Integrated pipeline for analysing cytometry data in
+>-  Integrated pipeline for analysing cytometry data in R
 
 ![](https://journals.plos.org/ploscompbiol/article/figure/image?size=large&id=10.1371/journal.pcbi.1005112.g001){ width=75% }
 
@@ -454,3 +454,9 @@ myheatmap %>%
 ![](https://dillonhammill.github.io/CytoRSuite/reference/figures/README-gate_draw.gif)
 
 </div>
+
+## Resources for Learning More
+
+>- [Datacamp](https://www.datacamp.com/)
+>- [R for Data Science - Hadley Wickham](https://r4ds.had.co.nz/)
+>- Github [(London 2019)](https://github.com/bjreisman/bjreisman.github.io/tree/master/London2019)
