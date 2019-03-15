@@ -5,7 +5,7 @@ author: "Benjamin Reisman"
 date: "March 22, 2019"
 output:
   slidy_presentation: default
-  code_folding: "hide"
+  pdf_document: default
 editor_options:
   chunk_output_type: console
 widescreen: yes
@@ -31,10 +31,10 @@ Compared to Commercial Flow Cytometry Software, R has the following advantages:
 - Free!
 </div>
 <div style="float: right; width: 50%;">
-![](https://raw.githubusercontent.com/bjreisman/bjreisman.github.io/master/London2019/movie.gif)
+![](movie.gif)
 </div>
 
-## Goals of this talk:
+## The goal of this talk is to learn how to get started with cytometry in R
 In R, things that look hard are easy, but things that look easy are (a little) hard.
 
 - Demonstrate why you might want to work in R
@@ -44,7 +44,7 @@ In R, things that look hard are easy, but things that look easy are (a little) h
 - Introduce some advanced analysis techniques
 - Provide examples and links to resources for learning more. 
 
-## Representing Data in R
+## There are many ways to represent data in R, here are two:
 
 - Matrix: An $n*m$ array of items, all of the single class
 - Data Frame: An $n*m$ array of items, but each column can be a different class
@@ -92,7 +92,7 @@ To work with data in R, it's best to have 'tidy data,' which meets the following
 2. Each observation ['cell'] must have its own row. 
 3. Each value must have its own cell ['entry'].
 
-![](https://d33wubrfki0l68.cloudfront.net/6f1ddb544fc5c69a2478e444ab8112fb0eea23f8/91adc/images/tidy-1.png){ width=50% }
+![](tidy-1.png){ width=50% }
 
 ...but cytometry data is not usually tidy. 
 
@@ -283,6 +283,7 @@ One of the advantages of R is that we're not limited to the dimensionality reduc
 
 - Ex: Uniform Manifold Approximation and Projection (UMAP)
     - McInnes L. et al. arXiv, 2018
+    - Becht, E, et al., Nature Biotechnology 2018
     
 - Advantages of UMAP vs. tSNE
    - Faster (minutes vs. hours)
@@ -439,7 +440,7 @@ myheatmap %>%
 ```
 
 
-## What else is out there
+## What else is out there (1)
 
 <div style="float: left; width: 50%;">
 
@@ -448,8 +449,8 @@ myheatmap %>%
 
 -  Chen, H, et al., _PLOS Computational Biology_ 2016
 -  Integrated pipeline for analysing cytometry data in R
-
-![](https://journals.plos.org/ploscompbiol/article/figure/image?size=large&id=10.1371/journal.pcbi.1005112.g001){ width=75% }
+-  Not currently maintained...
+![](journal.pcbi.1005112.g001.png){ width=75% }
 
 </div>
 <div style="float: right; width: 50%;">
@@ -463,8 +464,24 @@ myheatmap %>%
 
 </div>
 
+## What else is out there (2)
+
+FIt-SNE
+
+- Fast interpolation tSNE
+- [Linderman, GC, et al., Nature Methods 2019](https://www.nature.com/articles/s41592-018-0308-4)
+- Faster than BH-tSNE with over 5K points and scales as $f(n)$ vs. $f(n*log(n))$
+
+![](nbt.4314-F3.jpg)
+
 ## Resources for Learning More
 
 - [Datacamp](https://www.datacamp.com/)
+    - Intro course free
+    - Advanced courses $25 per month
+    - 2 months free with [microsoft visual studio dev essentials](https://visualstudio.microsoft.com/dev-essentials/)
 - [R for Data Science - Hadley Wickham](https://r4ds.had.co.nz/)
 - Github [(London 2019)](https://github.com/bjreisman/bjreisman.github.io/tree/master/London2019)
+    - All slides from this presentation in rmarkdown format. 
+- [RGLab Github](https://github.com/RGLab)
+    - See vignettes for FlowCore, FlowWorkspace, CytoML
