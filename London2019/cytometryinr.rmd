@@ -12,7 +12,7 @@ widescreen: yes
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(warning = FALSE, cache = TRUE)
+knitr::opts_chunk$set(warning = FALSE, cache = TRUE, dev = "png", dpi = 150)
 options(tinytex.verbose = TRUE)
 
 ```
@@ -25,13 +25,15 @@ Compared to Commercial Flow Cytometry Software, R has the following advantages:
 <div style="float: left; width: 50%;">
 - Reproducible (Data + Code = Figures)
 - Flexible (This presentation was created in R!)
-- Nice Graphics (ggplot2)
+- Nice Graphics (ggplot2, rgl)
 - Great for analysis pipelines and frequently used workflows
 - Newest analysis techniques
 - Free!
 </div>
 <div style="float: right; width: 50%;">
+
 ![](movie.gif)
+
 </div>
 
 ## The goal of this talk is to learn how to get started with cytometry in R
@@ -450,6 +452,7 @@ myheatmap %>%
 -  Chen, H, et al., _PLOS Computational Biology_ 2016
 -  Integrated pipeline for analysing cytometry data in R
 -  Not currently maintained...
+
 ![](journal.pcbi.1005112.g001.png){ width=75% }
 
 </div>
@@ -473,6 +476,8 @@ FIt-SNE
 - Faster than BH-tSNE with over 5K points and scales as $f(n)$ vs. $f(n*log(n))$
 
 ![](nbt.4314-F3.jpg)
+
+  - (Becht, E, et al., Nature Biotechnology 2018)
 
 ## Resources for Learning More
 
