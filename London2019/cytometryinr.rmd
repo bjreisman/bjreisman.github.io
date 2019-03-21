@@ -1,7 +1,10 @@
 ---
 title: "Working with Cytometry Data in R"
 subtitle: "Mass Cytometry Course 2019"
-author: "Benjamin Reisman"
+author: 
+- "Benjamin Reisman"
+- "MD/PhD Candidate"
+- "Vanderbilt University"
 date: "March 22, 2019"
 output:
   slidy_presentation: default
@@ -12,11 +15,36 @@ widescreen: yes
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(warning = FALSE, cache = TRUE, dev = "png", dpi = 150)
+knitr::opts_chunk$set(warning = FALSE, cache = FALSE, dev = "png", dpi = 120)
 options(tinytex.verbose = TRUE)
 
 ```
 
+
+## The goal of this talk is to learn how to get started with cytometry in R
+
+In R, things that look hard are easy, but things that look easy are (a little) hard.
+<div style="float: left; width: 50%;">
+
+- Demonstrate why you might want to work in R
+- Overcoming the biggest obstacles to working in R
+    - Getting data into R
+    - Tidying data into the right format for analysis
+- Introduce some advanced analysis techniques
+- Provide examples and links to resources for learning more. 
+
+</div>
+
+<div style="float: left; width: 50%;">
+
+How to following along:
+
+- Slides: [https://bjreisman.github.io/London2019/cytometryinr.html](https://bjreisman.github.io/London2019/cytometryinr.html)
+- Rmarkdown: [https://github.com/bjreisman](https://github.com/bjreisman)
+  - bjreisman.github.io
+    - London2019
+    
+</div>
 ## Why Use R? 
 
 _"R is a free software environment for statistical computing and graphics"_
@@ -36,16 +64,6 @@ Compared to Commercial Flow Cytometry Software, R has the following advantages:
 
 </div>
 
-## The goal of this talk is to learn how to get started with cytometry in R
-In R, things that look hard are easy, but things that look easy are (a little) hard.
-
-- Demonstrate why you might want to work in R
-- Overcoming the biggest obstacles to working in R
-    - Getting data into R
-    - Tidying data into the right format for analysis
-- Introduce some advanced analysis techniques
-- Provide examples and links to resources for learning more. 
-
 ## There are many ways to represent data in R, here are two:
 
 - Matrix: An $n*m$ array of items, all of the single class
@@ -63,23 +81,15 @@ ggplot(iris, aes(x= Petal.Length, y = Petal.Width, col = Species)) +
 
 ## Representing Data in R: Data Frames
 Data Frame: An $n*m$ array of items, but each column can be a different class
-```{r}
+```{r iris: dataframe}
 class(iris)
 str(iris)
 ```
 
-## Representing Data in R: Matricies (1)
-- Matrix: An $n*m$ array of items, all of the single class
-```{r}
-iris_matrix <- as.matrix(iris)
-head(iris_matrix)
-str(iris_matrix)
-```
-that doesn't look right...
 
-## Representing Data in R: Matricies (2)
+## Representing Data in R: Matricies
 - Matrix: An $n*m$ array of items, all of the single class
-```{r}
+```{r iris: matrix}
 #only the numeric columns, 1:4
 iris_matrix <- as.matrix(iris[1:4])
 head(iris_matrix)
@@ -136,12 +146,41 @@ Traditional Object | FlowCore Object | R Equivalent
 FCS File           | FlowFrame      | Matrix
 Bunch of FCS File  | FlowSet        | List of matrices + pData
 Gated Experiment   | Gatingset      | -
+
+_None of these are a data.frame, the most flexible datatype in R_
 </div>
+
+
+## Cytotidyr Helps Bridge the gap between Cytobank and R
+
+[Avaliable on github](https://github.com/bjreisman/cytotidyr)
+
+<div style="float: left; width: 50%;">
+
+- Import experiment from cytobank via CytobankAPI
+    - `fetchCytobankExperiment`
+- Import experiment from cytobank as exported ACS file
+    - `parseCytobankExperiment`
+    - alternatively, `cytoML::cytobankExperiment`
+- Convert a flowSet to a dataframe w/ pData
+    - `as.data.frame.flowFrame` 
+
+</div>
+<div style="float: right; width: 50%;">
+```{r cytotidyr install, eval = FALSE}
+#install.packages("devtools")
+devtools::install_github("bjreisman/cytotidyr")
+```
+![](cytotidyrlogo2.png)
+</div>
+
+
+
 
 ## It’s easy to get flow cytometry data into R with the right tools
 
 First we'll need to load a few packages...
-```{r warning = FALSE, message = FALSE}
+```{r load libraries, warning = FALSE, message = FALSE}
 library(CytobankAPI) #connects to cytobank
 library(flowWorkspace)#loads flowcore, flowWorkspace
 library(CytoML) #Used to read in gating files
@@ -152,7 +191,7 @@ library(ggplot2)
 ```
 
 and find our files...
-```{r}
+```{r find files}
 fcs_paths <- list.files(pattern = ".fcs", recursive = T)
 print(fcs_paths)
 ```
@@ -166,91 +205,104 @@ This includes:
 - transformations
 - panels
 - sample tags. 
-```{r cache = TRUE, warning = FALSE, eval = F}
-token <- "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIwNTY2MjlhYjc0YzA2ZWE3Njk0YzQ2NWM2YWM3MWIwMyIsImV4cCI6MTU1MjUxNjIxNywidXNlcl9pZCI6MTQ3LCJhdWQiOiJjeXRvYmFua19hcGlfdjFfdXNlcnMiLCJpYXQiOjE1NTI0ODc0MTcsImlzcyI6Imh0dHBzOi8vdmFuZGVyYmlsdC5jeXRvYmFuay5vcmcvIiwibmJmIjoxNTUyNDg3NDE3LCJzdWIiOiJjeXRvYmFua19hcGlfdjEifQ.MXnBJnOx4O2WutoK3U8OgNtaAo9pxnzKBNl8v8szGCY"
+```{r fetch experiment, cache = TRUE, warning = FALSE, eval = F}
+token <- "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJhNzE5YzU0MTU0OGM0ZDEzMzI3NjE4MGQzYmM0ZGJmMyIsImV4cCI6MTU1MzIxNDM2NSwidXNlcl9pZCI6MTQ3LCJhdWQiOiJjeXRvYmFua19hcGlfdjFfdXNlcnMiLCJpYXQiOjE1NTMxODU1NjUsImlzcyI6Imh0dHBzOi8vdmFuZGVyYmlsdC5jeXRvYmFuay5vcmcvIiwibmJmIjoxNTUzMTg1NTY1LCJzdWIiOiJjeXRvYmFua19hcGlfdjEifQ.uXJfnd0e7FbJNBSI_YPxOsY5GsRNkMfhmhsuE92pliQ"
 cyto_session <- authenticate("vanderbilt", auth_token = token)
 experiment.id <- 29958
 exp_info <- fetchCytobankExperiment(cyto_session, experiment.id)
 ```
 
-```{r, echo = F}
+```{r fetch local experiment, echo = F}
+#exp_info$sampletags
 #saveRDS(exp_info, "exp_info.rds")
 exp_info<- readRDS("exp_info.rds")
 ```
 
 ## Reading in the Data
 First we'll read in the data as a flowSet
-```{r cache = TRUE,tidy = TRUE}
+```{r readFlowset, cache = TRUE,tidy = TRUE}
 myflowset<- flowCore::read.flowSet(fcs_paths)
 ```
 Then we'll convert it to a gatingSet
-```{r}
+```{r covert to gatingset}
 mygatingset <- flowWorkspace::GatingSet(myflowset)
 ```
 
 ## Cytometry Preprocessing (Transformations, Gates, Panels) can be done in R
 
+<div style="float: left; width: 50%;">
+
 Next we'll:
 
-- rescale the data using the defined asinh transformation for the approraite channels:
+- rescale the data using the defined asinh transformation for the appropriate channels:
 - rename the channels according to our panel
 - apply gates to the gatingset
 - convert the data back to a flowset
-```{r}
+
+</div>
+
+<div style="float: right; width: 50%;">
+
+```{r preprocessing}
 mygatingset <- flowWorkspace::transform(mygatingset, exp_info$transforms)
 markernames(mygatingset) <- exp_info$panels$`Panel 1`
 CytoML::gating(exp_info$gates, mygatingset)
-myflowset_preprocessed <- flowWorkspace::getData(mygatingset)
+mygatingset <- tagFlowSet(mygatingset, exp_info$sampletags)
+myflowset_preprocessed <- flowWorkspace::getData(mygatingset, "viable")
 ```
 
+</div>
 ## Cytotidyr allows us to convert the flowset to a tidy data.frame
 
 In order to work with our data using R, we'll need to convert it to a data frame, using the `as.data.frame` function from cytotidyr
-```{r}
-mydataframe <- as.data.frame(myflowset_preprocessed, use_longnames = T) %>%
-  mutate(`FCS Filename` = basename(`FCS Filename`)) %>%
-  mutate(Group = substr(`FCS Filename`, 13, 19))
+```{r tidy data}
+mydataframe <- as.data.frame(myflowset_preprocessed, use_longnames = T)
 str(mydataframe)
 ```
 
 
 ## Making Cytometry Figures in R (1)
 
-One thing we may want to do is reproduce the same tSNE figure we made on cytobank:
-```{r}
+One thing we may want to do is reproduce the same t-SNE figure we made on cytobank:
+```{r tSNE}
 ggplot(mydataframe, aes(x = tSNE1, y = tSNE2)) + 
   geom_point(shape = ".") + 
   coord_fixed() + 
-  facet_wrap(~Group) 
+  facet_wrap(~Individuals) 
 ```
 
 
 ## Making Cytometry Figures in R (2)
 
 We can also customize our plots in ways that are not easy to do in cytobank:
-```{r}
+```{r custom tSNE}
 ggplot(mydataframe, aes(x = tSNE1, y = tSNE2)) + 
   geom_point(shape = 16, alpha = 0.2, size = 0.2) + 
   coord_fixed() + 
-  facet_wrap(~Group) + 
-  scale_color_viridis_c(option = "A") + 
+  facet_wrap(~Individuals) + 
   theme_minimal() + 
   theme(axis.text = element_blank())
 ```
 
 ## Making Cytometry Figures in R (3)
+<div style="float: left; width: 50%;">
 
-We may also want to plot multiple channels in the same plot with faceting:
-
+We may also want to plot multiple channels in the same plot with faceting
+![](cytometryinr_short_files/figure-slidy/intensity across markers-1.png){ width=100% }
+</div>
+<div style="float: right; width: 50%;">
 - Two differences between this plot compared and the last plot:
     - Marker intensity is mapped to color
-    - Markers are facetted across mutliple subplots
+    - Markers are faceted across multiple subplots
 
 - In our current [wide] data.frame, intensity is spread across multiple columns
 - The plot we want to make requires a [long] data.frame with a single column for intensity + a new column for markers 
 - We'll need to 'tidy' the data to the right format for our plot.
+</div>
 
-```{r cache = T}
+<div style="float: left; width: 100%;">
+
+```{r wide to long example, cache = T}
 dim((mydataframe))
 
 element2 <- function(x){unlist(lapply(strsplit(x, split = "_|\ "),"[[", 2))}
@@ -262,17 +314,18 @@ mydataframe.long <- mydataframe %>%
 dim((mydataframe.long))
 ```
 
+</div>
 ## Making Cytometry Figures in R (4)
 
 Then we'll make our plot: 
 
-```{r}
+```{r intensity across markers}
 mydataframe.long %>%
   ggplot(aes(x = tSNE1, y = tSNE2, col = intensity)) + 
   geom_point(shape = ".") + 
   scale_x_continuous(expand = c(0,0)) + 
   scale_y_continuous(expand = c(0,0)) +
-  scale_color_viridis_c(option = "A") + 
+  scale_colour_viridis_c(option = "A") + 
   coord_fixed() + 
   facet_wrap(~marker, nrow = 3) + 
   theme_minimal() + 
@@ -287,24 +340,24 @@ One of the advantages of R is that we're not limited to the dimensionality reduc
     - McInnes L. et al. arXiv, 2018
     - Becht, E, et al., Nature Biotechnology 2018
     
-- Advantages of UMAP vs. tSNE
+- Advantages of UMAP vs. t-SNE
    - Faster (minutes vs. hours)
-   - Scalable ($f(n)$ vs. $f(n*log(n))$)
+   - Scalable ($o(n)$ vs. $o(n*log(n))$)
    - Preserves local+global structure
    - Other nice features (embedding new points, supervised learning, etc...)
 
 
 ## Applying alternative dimensionality reduction techniques (2)
 
-First we'll need to create a seperate matrix containing the columns we want to be included in the dimensionality reduction. 
-```{r}
+First we'll need to create a separate matrix containing the columns we want to be included in the dimensionality reduction. 
+```{r as matrix}
 mymatrix <- mydataframe %>%
   select(contains("(V)")) %>%
   as.matrix()
 ```
 
 Then we'll run it through the uwot implementation of UMAP
-```{r}
+```{r run umap}
 #install.packages("devtools")
 #devtools::install_github("jlmelville/uwot")
 library(uwot)
@@ -316,22 +369,22 @@ str(myumap)
 
 Next, we'll rejoin the two new UMAP columns to our original dataframe, and make our plot:
 
-```{r, echo = FALSE}
+```{r plot umap, echo = FALSE}
 colnames(myumap) <- c("UMAP1", "UMAP2")
 #library(cytotidyr)
 mydataframe %>%
   bind_cols(as.data.frame(myumap)) %>%
   ggplot(aes(x=UMAP1, y = UMAP2)) + 
   geom_point(shape = ".", alpha = 0.2) +
-  facet_wrap(~Group) + 
-  theme_classic() + 
+  facet_wrap(~Individuals) + 
+  theme_minimal() + 
   coord_fixed()
 ```
 
 
 ## Applying alternative dimensionality reduction techniques (4)
 
-```{r}
+```{r plot umap markers}
 mydataframe %>%
   bind_cols(as.data.frame(myumap)) %>%
   as_tibble() %>%
@@ -341,7 +394,7 @@ mydataframe %>%
   geom_point(shape = ".") + 
   scale_x_continuous(expand = c(0,0)) + 
   scale_y_continuous(expand = c(0,0)) +
-  scale_color_viridis_c(option = "A") + 
+  scale_colour_viridis_c(option = "A") + 
   coord_fixed() + 
   facet_wrap(~marker, nrow = 3) + 
   theme_minimal() + 
@@ -352,7 +405,7 @@ mydataframe %>%
 
 We can also plot our data as a map:
 
-```{r}
+```{r umap map}
 library(scico)
 axis.max <- apply(myumap, 2, max) + 1
 axis.min <- apply(myumap, 2, min) - 1
@@ -368,7 +421,7 @@ mydataframe %>%
   scale_fill_scico(palette = "oleron", name = "density", trans = "sqrt") + 
   scale_x_continuous(expand = c(0,0), limits = c(axis.min[1], axis.max[1])) + 
   scale_y_continuous(expand = c(0,0), limits = c(axis.min[2], axis.max[2])) +
-  theme_classic() + 
+  theme_minimal() + 
   coord_fixed()
 ```
 
@@ -379,22 +432,29 @@ We can also apply a clustering algorithm to our dimensionality reduced data.
 - Density-based spatial clustering of applications with noise (DBSCAN)
      - No need to specify number of clusters
      - Few parameters to tune (eps and minPts) 
-     - Fast + scalable
+     - Fast + salable
 
-```{r}
+```{r clustering with dbscan}
 #install.packages("dbscan")
 library(dbscan)
-mydbscan <- dbscan(myumap, eps = 0.3, minPts = 150)
+library(scales)
+mydbscan <- dbscan(myumap, eps = 0.35, minPts = 150)
 mydbscan
+
+#this finds the number of clusters and manually defines the palette
+#such that the outlier cluster is "grey50"
+nclust <- max(unique(mydbscan$cluster))
+mypalette <- c("grey50", hue_pal()(nclust))
+
 mydataframe %>%
   bind_cols(as.data.frame(myumap)) %>%
   mutate(cluster = as.factor(mydbscan$cluster)) %>%
- # dplyr::filter(cluster == 1:3) %>%
   ggplot(aes(x=UMAP1, y = UMAP2, col = cluster)) + 
   geom_point(shape = ".") + 
-  scale_color_discrete(guide = guide_legend(override.aes = list(shape = 15))) + 
+  scale_colour_manual(guide = guide_legend(override.aes = list(shape = 15)), 
+                      values = mypalette) + 
   coord_fixed() + 
-  theme_classic()
+  theme_minimal()
 ```
 
 ## Understanding our clusters
@@ -404,7 +464,7 @@ We have clusters, but how can we understand what makes them distinct?
 - Marker Enrichment Modeling (MEM)
 - Heatmaps (see example below)
 
-```{r cluster analysis}
+```{r cluster heatmap}
 library(tibble)
 library(scico)
 library(seriation)
@@ -434,7 +494,7 @@ myheatmap %>%
   mutate(marker = factor(marker, levels = colnames(myheatmap.mat)[(col.order)])) %>%
   mutate(cluster = factor(cluster, levels = rownames(myheatmap.mat)[(row.order)])) %>%
   ggplot(aes(x=cluster, y = marker,fill = MFI)) + 
-  geom_tile(color = "grey90", size = 0.5) + 
+  geom_tile(colour = "grey90", size = 0.5) + 
   scale_fill_viridis_c(option = "E") + 
   scale_x_discrete(expand = c(0,0)) + 
   scale_y_discrete(expand = c(0,0)) + 
@@ -450,7 +510,7 @@ myheatmap %>%
 
 
 -  Chen, H, et al., _PLOS Computational Biology_ 2016
--  Integrated pipeline for analysing cytometry data in R
+-  Integrated pipeline for analyzing cytometry data in R
 -  Not currently maintained...
 
 ![](journal.pcbi.1005112.g001.png){ width=75% }
@@ -490,3 +550,34 @@ FIt-SNE
     - All slides from this presentation in rmarkdown format. 
 - [RGLab Github](https://github.com/RGLab)
     - See vignettes for FlowCore, FlowWorkspace, CytoML
+    
+## Acknowledgements
+<div style="float: left; width: 50%;">
+- Kings College London
+  - Susanne Heck, PhD
+- Irish Lab
+  - Jonathan Irish, PhD
+  - Sierra Barrone
+  - Todd Bartkowiak, PhD
+  - Madeline J. Hayes
+  - Caroline. E Roe
+- Ferrell Lab 
+  - P. Brent Ferrell, MD
+  - Katie Ivy
+</div>
+<div style="float: right; width: 50%;">
+
+- Vanderbilt Laboratory for Biosynthetic Studies
+  - Brian Bachmann, PhD
+- Thesis Committee
+  - Jeffery Rathmell, PhD
+  - Brian Bachmann, PhD
+  - Lawrence Marnett, PhD
+  - Vito Quaranta, MD
+  - Jonathan Irish, PhD
+- Funding
+  - F30CA236131
+  - R01CA226833
+  - R01GM092218	
+
+</div>
