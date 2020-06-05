@@ -180,6 +180,18 @@ devtools::install_github("bjreisman/cytotidyr")
 
 First we'll need to load a few packages...
 ```{r load libraries, warning = FALSE, message = FALSE}
+install.packages("CytobankAPI")
+install.packages("dplyr")
+install.packages("tidyr")
+install.packages("ggplot2")
+install.packages("uwot")
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install("flowWorkspace")
+
+devtools::install_github("bjreisman/cytotidyr")
+
 library(CytobankAPI) #connects to cytobank
 library(flowWorkspace)#loads flowcore, flowWorkspace
 library(CytoML) #Used to read in gating files
@@ -250,13 +262,24 @@ mygatingset <- tagFlowSet(mygatingset, exp_info$sampletags)
 myflowset_preprocessed <- flowWorkspace::getData(mygatingset, "viable")
 ```
 
+```{r}
+ce <- open_cytobank_experiment(list.files(pattern = "acs"))
+gs <- cytobank_to_gatingset(ce)
+cs <- flowWorkspace::gs_pop_get_data(gs, "viable")
+fs <- cytoset_to_flowSet(cs)
+
+mydataframe <-as_tibble(fs)
+
+mydataframe
+```
+
 </div>
 ## Cytotidyr allows us to convert the flowset to a tidy data.frame
 
 In order to work with our data using R, we'll need to convert it to a data frame, using the `as.data.frame` function from cytotidyr
 ```{r tidy data}
-mydataframe <- as.data.frame(myflowset_preprocessed, use_longnames = T)
-str(mydataframe)
+#mydataframe <- as.data.frame(myflowset_preprocessed, use_longnames = T)
+#str(mydataframe)
 ```
 
 
